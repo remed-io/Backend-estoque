@@ -1,12 +1,6 @@
 from fastapi import FastAPI
-from app.routes import produto_routes
+from app.routes import hello_route
 
 app = FastAPI()
 
-# Rota principal
-@app.get("/")
-def read_root():
-    return {"message": "Hello World da Farmácia!"}
-
-# Incluir outras rotas
-app.include_router(produto_routes.router, prefix="/produtos")
+app.include_router(hello_route.router)
