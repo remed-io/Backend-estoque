@@ -1,6 +1,10 @@
 from fastapi import FastAPI
-from app.routes import hello_route
+from app.routes import produto_route
 
 app = FastAPI()
 
-app.include_router(hello_route.router)
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+app.include_router(produto_route.router, prefix="/produtos", tags=["Produtos"])
