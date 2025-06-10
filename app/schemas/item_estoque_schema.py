@@ -1,0 +1,1 @@
+# app/schema/item_estoque_schema.py

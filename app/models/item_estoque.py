@@ -1,0 +1,1 @@
+# app/models/item_estoque.py

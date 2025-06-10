@@ -9,6 +9,7 @@ python-dotenv==1.1.0
 python-multipart==0.0.20
 orjson==3.10.18
 email_validator==2.2.0
+passlib bcrypt python-multipart
 pytest
 pytest-asyncio
 httpx

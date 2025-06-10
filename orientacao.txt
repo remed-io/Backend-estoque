@@ -1,0 +1,40 @@
+docker exec -it b36416523e8b psql -U postgres
+psql (15.13 (Debian 15.13-1.pgdg120+1))
+Type "help" for help.
+
+postgres=# \l
+                                                List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    | ICU Locale | Locale Provider |   Access privileges   
+-----------+----------+----------+------------+------------+------------+-----------------+-----------------------
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | 
+ remediodb | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | 
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/postgres          +
+           |          |          |            |            |            |                 | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/postgres          +
+           |          |          |            |            |            |                 | postgres=CTc/postgres
+(4 rows)
+
+postgres=# \c remediodb
+You are now connected to database "remediodb" as user "postgres".
+remediodb=# \dt
+                   List of relations
+ Schema |            Name            | Type  |  Owner   
+--------+----------------------------+-------+----------
+ public | armazenamento              | table | postgres
+ public | cuidadopessoal             | table | postgres
+ public | fornecedor                 | table | postgres
+ public | funcionario                | table | postgres
+ public | implementoalimentar        | table | postgres
+ public | itemarmazenado             | table | postgres
+ public | itemestoque                | table | postgres
+ public | medicamento                | table | postgres
+ public | movimentacaoestoque        | table | postgres
+ public | restricao                  | table | postgres
+ public | restricaosuplemento        | table | postgres
+ public | subcategoriacuidadopessoal | table | postgres
+(12 rows)
+
+remediodb=# SELECT * from armazenamento;
+ id | local_armazenamento 
+----+---------------------
+(0 rows)

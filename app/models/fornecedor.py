@@ -1,22 +1,12 @@
-from pydantic import BaseModel
+#app/models/fornecedor.py
 
-class Fornecedor(BaseModel):
-    """
-    Classe que representa um fornecedor.
-    Atributos:
-        nome (str): Nome do fornecedor.
-        cnpj (str): CNPJ do fornecedor.
-        contato (str): Contato do fornecedor.
-    """
-    
-    def __init__(self, nome: str, cnpj: str, contato: str):
-        self.nome = nome
-        self.cnpj = cnpj
-        self.contato = contato
+from sqlalchemy import Column, Integer, String
+from settings import Base
 
-    def __str__(self):
-        return (
-            f"Fornecedor(nome={self.nome},"
-            f"cnpj={self.cnpj},"
-            f"contato={self.contato})"
-        )
+class Fornecedor(Base):
+    __tablename__ = "fornecedor"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome = Column(String(100), nullable=False)
+    cnpj = Column(String(20), nullable=False, unique=True)
+    contato = Column(String(100))
