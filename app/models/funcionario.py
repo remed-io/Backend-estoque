@@ -1,6 +1,6 @@
 # app/models/funcionario.py
 from sqlalchemy import Column, Integer, String, DateTime
-from settings import Base
+from app.settings import Base
 from datetime import datetime
 
 class Funcionario(Base):

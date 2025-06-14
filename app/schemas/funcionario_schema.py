@@ -5,7 +5,7 @@ from typing import Optional
 
 class FuncionarioBase(BaseModel):
     nome: str = Field(..., max_length=50)
-    cpf: str = Field(..., min_length=11, max_length=11, regex=r'^\d{11}$')
+    cpf: str = Field(..., min_length=11, max_length=11)
     email: EmailStr
     cargo: str = Field(..., max_length=50)
 
