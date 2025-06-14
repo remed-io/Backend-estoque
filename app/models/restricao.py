@@ -1,6 +1,6 @@
 #app/models/restricao.py
 from sqlalchemy import Column, Integer, String
-from settings import Base
+from app.settings import Base
 
 class Restricao(Base):
     __tablename__ = "restricao"

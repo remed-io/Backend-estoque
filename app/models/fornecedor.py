@@ -1,7 +1,7 @@
 #app/models/fornecedor.py
 
 from sqlalchemy import Column, Integer, String
-from settings import Base
+from app.settings import Base
 
 class Fornecedor(Base):
     __tablename__ = "fornecedor"

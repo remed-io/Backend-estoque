@@ -1,7 +1,7 @@
 #app/models/medicamento.py
 
 from sqlalchemy import Column, Integer, String, Text
-from settings import Base
+from app.settings import Base
 
 class Medicamento(Base):
     __tablename__ = "medicamento"
