@@ -1,10 +1,10 @@
-#app/models/armazenamento.py
+#app/models/armazem.py
 
 from sqlalchemy import Column, Integer, String
 from app.settings import Base
 
-class Armazenamento(Base):
-    __tablename__ = "armazenamento"
+class Armazem(Base):
+    __tablename__ = "armazem"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    local_armazenamento = Column(String(100), nullable=False)
+    local_armazem = Column(String(100), nullable=False)

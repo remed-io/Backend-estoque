@@ -1,4 +1,3 @@
-# app/models/funcionario.py
 from sqlalchemy import Column, Integer, String, DateTime
 from app.settings import Base
 from datetime import datetime

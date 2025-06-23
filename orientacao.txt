@@ -20,7 +20,7 @@ remediodb=# \dt
                    List of relations
  Schema |            Name            | Type  |  Owner   
 --------+----------------------------+-------+----------
- public | armazenamento              | table | postgres
+ public | armazem              | table | postgres
  public | cuidadopessoal             | table | postgres
  public | fornecedor                 | table | postgres
  public | funcionario                | table | postgres
@@ -34,7 +34,7 @@ remediodb=# \dt
  public | subcategoriacuidadopessoal | table | postgres
 (12 rows)
 
-remediodb=# SELECT * from armazenamento;
- id | local_armazenamento 
+remediodb=# SELECT * from armazem;
+ id | local_armazem 
 ----+---------------------
 (0 rows)

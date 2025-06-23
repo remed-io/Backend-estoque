@@ -1,5 +1,3 @@
-#app/models/fornecedor.py
-
 from sqlalchemy import Column, Integer, String
 from app.settings import Base
 

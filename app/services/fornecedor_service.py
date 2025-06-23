@@ -1,5 +1,3 @@
-#app/service/fornecedor_service.py
-
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.models.fornecedor import Fornecedor

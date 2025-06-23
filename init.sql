@@ -1,7 +1,7 @@
--- Tabela Armazenamento
-CREATE TABLE Armazenamento (
+-- Tabela Armazem
+CREATE TABLE Armazem (
     id SERIAL PRIMARY KEY,
-    local_armazenamento VARCHAR(100) NOT NULL
+    local_armazem VARCHAR(100) NOT NULL
 );
 
 -- Tabela Fornecedor
@@ -91,12 +91,12 @@ CREATE TABLE ItemEstoque (
 -- Tabela ItemArmazenado
 CREATE TABLE ItemArmazenado (
     id SERIAL PRIMARY KEY,
-    armazenamento_id INT NOT NULL REFERENCES Armazenamento(id),
+    armazem_id INT NOT NULL REFERENCES Armazem(id),
     item_estoque_id INT NOT NULL REFERENCES ItemEstoque(id),
     quantidade INT NOT NULL CHECK (quantidade >= 0),
     data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     
-    UNIQUE (armazenamento_id, item_estoque_id)
+    UNIQUE (armazem_id, item_estoque_id)
 );
 
 -- Tabela MovimentacaoEstoque
@@ -128,5 +128,5 @@ CREATE TABLE RestricaoSuplemento (
 -- Índices para melhorar performance
 CREATE INDEX idx_item_estoque_produto ON ItemEstoque(medicamento_id, cuidado_pessoal_id, suplemento_alimentar_id);
 CREATE INDEX idx_movimentacao_estoque ON MovimentacaoEstoque(item_estoque_id, data);
-CREATE INDEX idx_item_armazenado ON ItemArmazenado(armazenamento_id, item_estoque_id);
+CREATE INDEX idx_item_armazenado ON ItemArmazenado(armazem_id, item_estoque_id);
 CREATE INDEX idx_restricao_suplemento ON RestricaoSuplemento(suplemento_alimentar_id);

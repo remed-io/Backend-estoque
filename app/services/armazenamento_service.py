@@ -1,36 +1,36 @@
-#app/services/armazenamento_service.py
+#app/services/armazem_service.py
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from app.models.armazenamento import Armazenamento
-from app.schemas.armazenamento_schema import ArmazenamentoCreate
+from app.models.armazem import Armazem
+from app.schemas.armazem_schema import ArmazemCreate
 
-def create_armazenamento(db: Session, armazenamento: ArmazenamentoCreate):
-    db_armazenamento = Armazenamento(**armazenamento.dict())
-    db.add(db_armazenamento)
+def create_armazem(db: Session, armazem: ArmazemCreate):
+    db_armazem = Armazem(**armazem.dict())
+    db.add(db_armazem)
     db.commit()
-    db.refresh(db_armazenamento)
-    return db_armazenamento
+    db.refresh(db_armazem)
+    return db_armazem
 
-def get_all_armazenamentos(db: Session):
-    return db.query(Armazenamento).all()
+def get_all_armazems(db: Session):
+    return db.query(Armazem).all()
 
-def get_armazenamento_by_id(db: Session, id: int):
-    return db.query(Armazenamento).filter(Armazenamento.id == id).first()
+def get_armazem_by_id(db: Session, id: int):
+    return db.query(Armazem).filter(Armazem.id == id).first()
 
-def update_armazenamento(db: Session, id: int, armazenamento: ArmazenamentoCreate):
-    db_armazenamento = db.query(Armazenamento).filter(Armazenamento.id == id).first()
-    if not db_armazenamento:
-        raise HTTPException(status_code=404, detail="Armazenamento não encontrado")
-    for key, value in armazenamento.dict().items():
-        setattr(db_armazenamento, key, value)
+def update_armazem(db: Session, id: int, armazem: ArmazemCreate):
+    db_armazem = db.query(Armazem).filter(Armazem.id == id).first()
+    if not db_armazem:
+        raise HTTPException(status_code=404, detail="Armazem não encontrado")
+    for key, value in armazem.dict().items():
+        setattr(db_armazem, key, value)
     db.commit()
-    db.refresh(db_armazenamento)
-    return db_armazenamento
+    db.refresh(db_armazem)
+    return db_armazem
 
-def delete_armazenamento(db: Session, id: int):
-    db_armazenamento = db.query(Armazenamento).filter(Armazenamento.id == id).first()
-    if not db_armazenamento:
-        raise HTTPException(status_code=404, detail="Armazenamento não encontrado")
-    db.delete(db_armazenamento)
+def delete_armazem(db: Session, id: int):
+    db_armazem = db.query(Armazem).filter(Armazem.id == id).first()
+    if not db_armazem:
+        raise HTTPException(status_code=404, detail="Armazem não encontrado")
+    db.delete(db_armazem)
     db.commit()
-    return {"message": "Armazenamento deletado com sucesso"}
+    return {"message": "Armazem deletado com sucesso"}
