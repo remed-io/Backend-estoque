@@ -1,19 +1,18 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 
-class MedicamentoBase(BaseModel):
+class SuplementoAlimentarBase(BaseModel):
     nome: str = Field(..., max_length=100)
     descricao: Optional[str] = Field(None, max_length=255)
     principio_ativo: Optional[str] = Field(None, max_length=100)
-    tarja: Optional[str] = Field(None, max_length=50)
-    restricoes: Optional[str] = None
+    restricoes: Optional[str] = None  # Text pode ser longo, sem max_length
     fabricante: Optional[str] = Field(None, max_length=100)
     registro_anvisa: Optional[str] = Field(None, max_length=50)
 
-class MedicamentoCreate(MedicamentoBase):
+class SuplementoAlimentarCreate(SuplementoAlimentarBase):
     pass
 
-class MedicamentoRead(MedicamentoBase):
+class SuplementoAlimentarRead(SuplementoAlimentarBase):
     id: int
 
     class Config:
