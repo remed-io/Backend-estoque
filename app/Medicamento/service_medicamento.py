@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from app.models.medicamento import Medicamento
-from app.schemas.medicamento_schema import MedicamentoCreate
+from app.Medicamento.model_medicamento import Medicamento
+from app.Medicamento.schema_medicamento import MedicamentoCreate
 
 def create_medicamento(db: Session, medicamento: MedicamentoCreate):
     db_medicamento = Medicamento(**medicamento.dict())

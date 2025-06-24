@@ -1,4 +1,3 @@
-
 import os
 
 from fastapi import FastAPI
@@ -16,6 +15,8 @@ from app.MovimentacaoEstoque.routes_movimentacao_estoque import router as router
 from app.RestricaoAlimentar.routes_restricao_alimentar import router as router_restricao_alimentar
 from app.SubcategoriaCuidadoPessoal.routes_subcategoria_cuidado_pessoal import router as router_subcategoria_cuidado_pessoal
 from app.SuplementoAlimentar.routes_suplemento_alimentar import router as router_suplemento_alimentar
+from app.ItemArmazenado.routes_item_armazenado import router as router_item_armazenado
+from app.RestricaoSuplemento.routes_restricao_suplemento import router as router_restricao_suplemento
 
 
 app = FastAPI()
@@ -30,7 +31,9 @@ app.include_router(router_medicamento)
 app.include_router(router_movimentacao_estoque)
 app.include_router(router_restricao_alimentar)
 app.include_router(router_subcategoria_cuidado_pessoal)
-app.include_router(router_suplemento_alimentar)  
+app.include_router(router_suplemento_alimentar)
+app.include_router(router_item_armazenado)
+app.include_router(router_restricao_suplemento)  
 
 
 @app.get("/")

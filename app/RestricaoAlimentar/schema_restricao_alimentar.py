@@ -1,13 +1,13 @@
 #app/schema/restricao_schema.py
 from pydantic import BaseModel
 
-class RestricaoBase(BaseModel):
+class RestricaoAlimentarBase(BaseModel):
     nome: str
 
-class RestricaoCreate(RestricaoBase):
+class RestricaoAlimentarCreate(RestricaoAlimentarBase):
     pass
 
-class RestricaoRead(RestricaoBase):
+class RestricaoAlimentarRead(RestricaoAlimentarBase):
     id: int
 
     class Config:

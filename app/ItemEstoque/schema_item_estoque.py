@@ -1,4 +1,4 @@
-from pydantic import BaseModel, root_validator
+from pydantic import BaseModel, model_validator
 from typing import Optional
 from datetime import datetime
 
@@ -13,18 +13,18 @@ class ItemEstoqueCreate(ItemEstoqueBase):
     produto_medicamento_id: Optional[int] = None
     produto_cuidado_pessoal_id: Optional[int] = None
     produto_suplemento_alimentar_id: Optional[int] = None
-    
-    @root_validator
+
+    @model_validator(mode='after')
     def validar_cadastro_produto(cls, values):
         tipo_produto = [
-            values.get('produto_medicamento_id'),
-            values.get('produto_cuidado_pessoal_id'),
-            values.get('produto_suplemento_alimentar_id')
+            values.produto_medicamento_id,
+            values.produto_cuidado_pessoal_id,
+            values.produto_suplemento_alimentar_id
         ]
         preenchidos = sum(1 for v in tipo_produto if v is not None)
         if preenchidos != 1:
             raise ValueError(
-                "Deve ser preenchido apenas um tipo de produto:"
+                "Deve ser preenchido apenas um tipo de produto: "
                 "medicamento, cuidado pessoal ou suplemento alimentar."
             )
         return values

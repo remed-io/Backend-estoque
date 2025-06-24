@@ -30,8 +30,8 @@ CREATE TABLE Funcionario (
     data_contratacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela Restricao
-CREATE TABLE Restricao (
+-- Tabela RestricaoAlimentar
+CREATE TABLE RestricaoAlimentar (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(50) UNIQUE NOT NULL
 );
@@ -41,9 +41,11 @@ CREATE TABLE Medicamento (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     descricao VARCHAR(255),
+    dosagem VARCHAR(50),
     principio_ativo VARCHAR(100),
     tarja VARCHAR(50),
-    restricoes TEXT,
+    necessita_receita BOOLEAN NOT NULL DEFAULT FALSE,
+    forma_farmaceutica VARCHAR(50),
     fabricante VARCHAR(100),
     registro_anvisa VARCHAR(50)
 );
@@ -65,7 +67,6 @@ CREATE TABLE CuidadoPessoal (
     nome VARCHAR(100) NOT NULL,
     descricao VARCHAR(255),
     subcategoria_id INT REFERENCES SubcategoriaCuidadoPessoal(id),
-    forma VARCHAR(50),
     quantidade VARCHAR(20),
     volume VARCHAR(20),
     uso_recomendado VARCHAR(100),
@@ -78,13 +79,14 @@ CREATE TABLE ItemEstoque (
     id SERIAL PRIMARY KEY,
     codigo_barras VARCHAR(80) UNIQUE NOT NULL,
     fornecedor_id INT NOT NULL REFERENCES Fornecedor(id),
+    preco DECIMAL(10,2) NOT NULL,
+    lote VARCHAR(50) NOT NULL,
+    data_fabricacao DATE,
+    data_validade DATE NOT NULL,
     medicamento_id INT REFERENCES Medicamento(id),
     cuidado_pessoal_id INT REFERENCES CuidadoPessoal(id),
     suplemento_alimentar_id INT REFERENCES SuplementoAlimentar(id),
-    preco DECIMAL(10,2) NOT NULL,
-    validade DATE NOT NULL,
-    lote VARCHAR(50) NOT NULL,
-    data_fabricacao DATE,
+
     CHECK (
         ((medicamento_id IS NOT NULL)::int +
          (cuidado_pessoal_id IS NOT NULL)::int +
@@ -107,7 +109,7 @@ CREATE TABLE MovimentacaoEstoque (
     id SERIAL PRIMARY KEY,
     item_estoque_id INT NOT NULL REFERENCES ItemEstoque(id),
     funcionario_id INT REFERENCES Funcionario(id),
-    data TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    data_movimentacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('entrada', 'saida')),
     quantidade INT NOT NULL CHECK (quantidade > 0),
     cpf_comprador VARCHAR(14),
@@ -119,10 +121,10 @@ CREATE TABLE MovimentacaoEstoque (
 -- Tabela RestricaoSuplemento
 CREATE TABLE RestricaoSuplemento (
     suplemento_alimentar_id INT NOT NULL REFERENCES SuplementoAlimentar(id),
-    restricao_id INT NOT NULL REFERENCES Restricao(id),
+    restricao_alimentar_id INT NOT NULL REFERENCES RestricaoAlimentar(id),
     severidade VARCHAR(20) CHECK (severidade IN ('leve', 'moderada', 'grave')),
     observacoes TEXT,
-    PRIMARY KEY (suplemento_alimentar_id, restricao_id)
+    PRIMARY KEY (suplemento_alimentar_id, restricao_alimentar_id)
 );
 
 -- Índices para performance
