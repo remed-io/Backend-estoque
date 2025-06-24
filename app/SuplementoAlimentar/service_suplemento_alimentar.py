@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from app.models.suplemento_alimentar import SuplementoAlimentar
-from app.schemas.suplemento_alimentar_schema import SuplementoAlimentarCreate
+from app.SuplementoAlimentar.model_suplemento_alimentar import SuplementoAlimentar
+from app.SuplementoAlimentar.schema_suplemento_alimentar import SuplementoAlimentarCreate
 
 def create_suplemento(db: Session, suplemento: SuplementoAlimentarCreate):
     db_suplemento = SuplementoAlimentar(**suplemento.dict())
