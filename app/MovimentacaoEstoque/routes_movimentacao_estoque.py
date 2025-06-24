@@ -5,7 +5,7 @@ from app.settings import SessionLocal
 from app.MovimentacaoEstoque.schema_movimentacao_estoque import MovimentacaoEstoqueCreate, MovimentacaoEstoqueRead
 from app.MovimentacaoEstoque import service_movimentacao_estoque
 
-router = APIRouter(prefix="/movimentacoes", tags=["Movimentacoes"])
+router = APIRouter(prefix="/movimentacao-estoque", tags=["Movimentação Estoque"])
 
 def get_db():
     db = SessionLocal()

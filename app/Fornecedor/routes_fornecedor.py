@@ -5,7 +5,7 @@ from app.settings import SessionLocal
 from app.Fornecedor.schema_fornecedor import FornecedorCreate, FornecedorRead
 from app.Fornecedor import service_fornecedor
 
-router = APIRouter(prefix="/fornecedores", tags=["Fornecedores"])
+router = APIRouter( prefix="/fornecedor", tags=["Fornecedor"])
 
 def get_db():
     db = SessionLocal()

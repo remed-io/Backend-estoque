@@ -5,7 +5,7 @@ from app.settings import SessionLocal
 from app.SubcategoriaCuidadoPessoal.schema_subcategoria_cuidado_pessoal import SubcategoriaCuidadoPessoalCreate, SubcategoriaCuidadoPessoalRead
 from app.SubcategoriaCuidadoPessoal import service_subcategoria_cuidado_pessoal
 
-router = APIRouter(prefix="/subcategoriascuidadopessoal", tags=["SubcategoriasCuidadoPessoal"])
+router = APIRouter( prefix="/subcategoria-cuidado-pessoal", tags=["Subcategoria Cuidado Pessoal"])
 
 def get_db():
     db = SessionLocal()

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from settings import Base
+from app.settings import Base
 
 class CuidadoPessoal(Base):
     __tablename__ = "cuidado_pessoal"
@@ -17,3 +17,6 @@ class CuidadoPessoal(Base):
     fabricante = Column(String(100))
 
     subcategoria = relationship("SubcategoriaCuidadoPessoal", back_populates="produtos")
+    
+    def __str__(self):
+        return self.nome    

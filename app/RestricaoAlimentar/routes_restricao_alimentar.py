@@ -5,7 +5,7 @@ from app.settings import SessionLocal
 from app.RestricaoAlimentar.schema_restricao_alimentar import RestricaoCreate, RestricaoRead
 from app.RestricaoAlimentar import service_restricao_alimentar
 
-router = APIRouter(prefix="/restricoes", tags=["Restrições"])
+router = APIRouter(prefix="/restricao-alimentar", tags=["Restrição Alimentar"])
 
 def get_db():
     db = SessionLocal()

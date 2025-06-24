@@ -11,3 +11,6 @@ class SuplementoAlimentar(Base):
     restricoes = Column(Text)
     fabricante = Column(String(100))
     registro_anvisa = Column(String(50))
+
+    def __str__(self):
+        return self.nome

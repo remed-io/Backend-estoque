@@ -10,5 +10,6 @@ class Medicamento(Base):
     principio_ativo = Column(String(100))
     tarja = Column(String(50))
     restricoes = Column(Text)
-    fabricante = Column(String(100))
-    registro_anvisa = Column(String(50))
+    
+    def __str__(self):
+        return self.nome

@@ -5,7 +5,7 @@ from app.settings import SessionLocal
 from app.Farmacia.schema_farmacia import FarmaciaCreate, FarmaciaRead
 from app.Farmacia import service_farmacia
 
-router = APIRouter(prefix="/farmacias", tags=["Farmacias"])
+router = APIRouter(prefix="/farmacia", tags=["Farmácia"])
 
 def get_db():
     db = SessionLocal()

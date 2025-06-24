@@ -4,18 +4,19 @@ CREATE TABLE Armazem (
     local_armazem VARCHAR(100) NOT NULL
 );
 
+-- Tabela SubcategoriaCuidadoPessoal
+CREATE TABLE SubcategoriaCuidadoPessoal (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL UNIQUE,
+    descricao VARCHAR(255)
+);
+
 -- Tabela Fornecedor
 CREATE TABLE Fornecedor (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     cnpj VARCHAR(20) NOT NULL UNIQUE,
     contato VARCHAR(100)
-);
-
--- Tabela Restricao
-CREATE TABLE Restricao (
-    id SERIAL PRIMARY KEY,
-    nome VARCHAR(50) UNIQUE NOT NULL
 );
 
 -- Tabela Funcionario
@@ -29,11 +30,10 @@ CREATE TABLE Funcionario (
     data_contratacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela SubcategoriaCuidadoPessoal
-CREATE TABLE SubcategoriaCuidadoPessoal (
+-- Tabela Restricao
+CREATE TABLE Restricao (
     id SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL UNIQUE,
-    descricao VARCHAR(255)
+    nome VARCHAR(50) UNIQUE NOT NULL
 );
 
 -- Tabela Medicamento
@@ -43,6 +43,17 @@ CREATE TABLE Medicamento (
     descricao VARCHAR(255),
     principio_ativo VARCHAR(100),
     tarja VARCHAR(50),
+    restricoes TEXT,
+    fabricante VARCHAR(100),
+    registro_anvisa VARCHAR(50)
+);
+
+-- Tabela SuplementoAlimentar
+CREATE TABLE SuplementoAlimentar (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao VARCHAR(255),
+    principio_ativo VARCHAR(100),
     restricoes TEXT,
     fabricante VARCHAR(100),
     registro_anvisa VARCHAR(50)
@@ -62,17 +73,6 @@ CREATE TABLE CuidadoPessoal (
     fabricante VARCHAR(100)
 );
 
--- Tabela SuplementoAlimentar (SuplementoAlimentar)
-CREATE TABLE SuplementoAlimentar (
-    id SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    descricao VARCHAR(255),
-    principio_ativo VARCHAR(100),
-    restricoes TEXT,
-    fabricante VARCHAR(100),
-    registro_anvisa VARCHAR(50)
-);
-
 -- Tabela ItemEstoque
 CREATE TABLE ItemEstoque (
     id SERIAL PRIMARY KEY,
@@ -81,11 +81,15 @@ CREATE TABLE ItemEstoque (
     medicamento_id INT REFERENCES Medicamento(id),
     cuidado_pessoal_id INT REFERENCES CuidadoPessoal(id),
     suplemento_alimentar_id INT REFERENCES SuplementoAlimentar(id),
-    
     preco DECIMAL(10,2) NOT NULL,
     validade DATE NOT NULL,
     lote VARCHAR(50) NOT NULL,
-    data_fabricacao DATE
+    data_fabricacao DATE,
+    CHECK (
+        ((medicamento_id IS NOT NULL)::int +
+         (cuidado_pessoal_id IS NOT NULL)::int +
+         (suplemento_alimentar_id IS NOT NULL)::int) = 1
+    )
 );
 
 -- Tabela ItemArmazenado
@@ -95,7 +99,6 @@ CREATE TABLE ItemArmazenado (
     item_estoque_id INT NOT NULL REFERENCES ItemEstoque(id),
     quantidade INT NOT NULL CHECK (quantidade >= 0),
     data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    
     UNIQUE (armazem_id, item_estoque_id)
 );
 
@@ -113,20 +116,17 @@ CREATE TABLE MovimentacaoEstoque (
     observacoes TEXT
 );
 
--- Tabela RestricaoSuplemento (APENAS para SuplementoAlimentar)
+-- Tabela RestricaoSuplemento
 CREATE TABLE RestricaoSuplemento (
     suplemento_alimentar_id INT NOT NULL REFERENCES SuplementoAlimentar(id),
     restricao_id INT NOT NULL REFERENCES Restricao(id),
-    
-    -- Informações adicionais sobre a restrição
     severidade VARCHAR(20) CHECK (severidade IN ('leve', 'moderada', 'grave')),
     observacoes TEXT,
-    
     PRIMARY KEY (suplemento_alimentar_id, restricao_id)
 );
 
--- Índices para melhorar performance
+-- Índices para performance
+CREATE INDEX idx_item_armazenado ON ItemArmazenado(armazem_id, item_estoque_id);
 CREATE INDEX idx_item_estoque_produto ON ItemEstoque(medicamento_id, cuidado_pessoal_id, suplemento_alimentar_id);
 CREATE INDEX idx_movimentacao_estoque ON MovimentacaoEstoque(item_estoque_id, data);
-CREATE INDEX idx_item_armazenado ON ItemArmazenado(armazem_id, item_estoque_id);
 CREATE INDEX idx_restricao_suplemento ON RestricaoSuplemento(suplemento_alimentar_id);

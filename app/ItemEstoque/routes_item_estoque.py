@@ -5,7 +5,7 @@ from app.settings import SessionLocal
 from app.ItemEstoque.schema_item_estoque import ItemEstoqueCreate, ItemEstoqueRead
 from app.ItemEstoque import service_item_estoque
 
-router = APIRouter(prefix="/itensestoque", tags=["ItensEstoque"])
+router = APIRouter(prefix="/item-estoque", tags=["Item Estoque"])
 
 def get_db():
     db = SessionLocal()

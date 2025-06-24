@@ -9,7 +9,7 @@ from app.Funcionario.schema_funcionario import (
 )
 from app.Funcionario import service_funcionario
 
-router = APIRouter(prefix="/funcionarios", tags=["Funcionarios"])
+router = APIRouter(prefix="/funcionario", tags=["Funcionário"])
 
 def get_db():
     db = SessionLocal()
