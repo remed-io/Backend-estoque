@@ -1,18 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.settings import SessionLocal
+from app.settings import get_db
 from app.SubcategoriaCuidadoPessoal.schema_subcategoria_cuidado_pessoal import SubcategoriaCuidadoPessoalCreate, SubcategoriaCuidadoPessoalRead
 from app.SubcategoriaCuidadoPessoal import service_subcategoria_cuidado_pessoal
 
 router = APIRouter( prefix="/subcategoria-cuidado-pessoal", tags=["Subcategoria Cuidado Pessoal"])
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=SubcategoriaCuidadoPessoalRead)
 def create_subcategoria(subcategoria: SubcategoriaCuidadoPessoalCreate, db: Session = Depends(get_db)):

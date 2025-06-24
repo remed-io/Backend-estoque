@@ -1,18 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.settings import SessionLocal
+from app.settings import get_db
 from app.ItemEstoque.schema_item_estoque import ItemEstoqueCreate, ItemEstoqueRead
 from app.ItemEstoque import service_item_estoque
 
 router = APIRouter(prefix="/item-estoque", tags=["Item Estoque"])
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=ItemEstoqueRead)
 def create_item(item: ItemEstoqueCreate, db: Session = Depends(get_db)):

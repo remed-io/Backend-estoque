@@ -1,18 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.settings import SessionLocal
+from app.settings import get_db
 from app.RestricaoAlimentar.schema_restricao_alimentar import RestricaoAlimentarCreate, RestricaoAlimentarRead
 from app.RestricaoAlimentar import service_restricao_alimentar
 
 router = APIRouter(prefix="/restricao-alimentar", tags=["RestricaoAlimentar"])
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=RestricaoAlimentarRead)
 def create_restricao_alimentar(restricao: RestricaoAlimentarCreate, db: Session = Depends(get_db)):

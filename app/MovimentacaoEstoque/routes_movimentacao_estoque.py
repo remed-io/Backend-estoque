@@ -1,18 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.settings import SessionLocal
+from app.settings import get_db
 from app.MovimentacaoEstoque.schema_movimentacao_estoque import MovimentacaoEstoqueCreate, MovimentacaoEstoqueRead
 from app.MovimentacaoEstoque import service_movimentacao_estoque
 
 router = APIRouter(prefix="/movimentacao-estoque", tags=["Movimentação Estoque"])
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=MovimentacaoEstoqueRead)
 def create_movimentacao(movimentacao: MovimentacaoEstoqueCreate, db: Session = Depends(get_db)):

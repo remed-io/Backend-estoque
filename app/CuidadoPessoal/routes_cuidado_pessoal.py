@@ -1,19 +1,12 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.settings import SessionLocal
+from app.settings import get_db
 from app.CuidadoPessoal.schema_cuidado_pessoal import CuidadoPessoalCreate, CuidadoPessoalRead
 from app.CuidadoPessoal import service_cuidado_pessoal
 
 router = APIRouter(prefix="/cuidado-pessoal", tags=["Cuidado Pessoal"])
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-        
+     
 @router.post("/", response_model=CuidadoPessoalRead)
 def create_cuidado_pessoal(cuidado_pessoal: CuidadoPessoalCreate, db: Session = Depends(get_db)):
     return service_cuidado_pessoal.create_cuidado_pessoal(db, cuidado_pessoal)  

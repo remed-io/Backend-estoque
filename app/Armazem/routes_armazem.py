@@ -3,18 +3,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.settings import SessionLocal
+from app.settings import get_db
 from app.Armazem.schema_armazem import ArmazemCreate, ArmazemRead
 from app.Armazem import service_armazem
 
 router = APIRouter(prefix="/armazem", tags=["Armazém"])
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=ArmazemRead)
 def create_armazem(armazem: ArmazemCreate, db: Session = Depends(get_db)):

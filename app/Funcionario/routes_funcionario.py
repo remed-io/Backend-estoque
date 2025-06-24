@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.settings import SessionLocal
+from app.settings import get_db
 from app.Funcionario.schema_funcionario import (
     FuncionarioCreate,
     FuncionarioRead,
@@ -10,13 +10,6 @@ from app.Funcionario.schema_funcionario import (
 from app.Funcionario import service_funcionario
 
 router = APIRouter(prefix="/funcionario", tags=["Funcionário"])
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=FuncionarioRead)
 def create_funcionario(funcionario: FuncionarioCreate, db: Session = Depends(get_db)):

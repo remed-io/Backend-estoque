@@ -1,18 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.settings import SessionLocal
+from app.settings import get_db
 from app.Fornecedor.schema_fornecedor import FornecedorCreate, FornecedorRead
 from app.Fornecedor import service_fornecedor
 
 router = APIRouter( prefix="/fornecedor", tags=["Fornecedor"])
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=FornecedorRead)
 def create_fornecedor(fornecedor: FornecedorCreate, db: Session = Depends(get_db)):

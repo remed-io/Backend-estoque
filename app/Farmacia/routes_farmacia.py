@@ -1,18 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.settings import SessionLocal
+from app.settings import get_db
 from app.Farmacia.schema_farmacia import FarmaciaCreate, FarmaciaRead
 from app.Farmacia import service_farmacia
 
 router = APIRouter(prefix="/farmacia", tags=["Farmácia"])
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=FarmaciaRead)
 def create_farmacia(farmacia: FarmaciaCreate, db: Session = Depends(get_db)):
