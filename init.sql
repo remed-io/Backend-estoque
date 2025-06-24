@@ -48,13 +48,13 @@ CREATE TABLE Medicamento (
     registro_anvisa VARCHAR(50)
 );
 
--- Tabela SuplementoAlimentar
 CREATE TABLE SuplementoAlimentar (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     descricao VARCHAR(255),
     principio_ativo VARCHAR(100),
-    restricoes TEXT,
+    sabor VARCHAR(50),
+    peso_volume VARCHAR(20),
     fabricante VARCHAR(100),
     registro_anvisa VARCHAR(50)
 );
