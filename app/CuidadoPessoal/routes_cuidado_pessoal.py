@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.settings import get_db
 from app.CuidadoPessoal.schema_cuidado_pessoal import CuidadoPessoalCreate, CuidadoPessoalRead
 from app.CuidadoPessoal import service_cuidado_pessoal
+from app.SubcategoriaCuidadoPessoal.model_subcategoria_cuidado_pessoal import SubcategoriaCuidadoPessoal
 
 router = APIRouter(prefix="/cuidado-pessoal", tags=["Cuidado Pessoal"])
      
@@ -33,7 +34,15 @@ def get_cuidado_pessoal_by_nome(nome: str, db: Session = Depends(get_db)):
 #buscar a partir do nome da subcategoria
 @router.get("/subcategoria/{subcategoria_nome}", response_model=List[CuidadoPessoalRead])
 def get_cuidados_pessoais_by_subcategoria(subcategoria_nome: str, db: Session = Depends(get_db)):
-    cuidados_pessoais = service_cuidado_pessoal.get_cuidados_pessoais_by_subcategoria(db, subcategoria_nome)
+    subcategorias = db.query(SubcategoriaCuidadoPessoal).filter(
+        SubcategoriaCuidadoPessoal.nome.ilike(f"%{subcategoria_nome}%")
+    ).all()
+    if not subcategorias:
+        raise HTTPException(status_code=404, detail="Subcategoria não encontrada")
+    cuidados_pessoais = []
+    for subcategoria in subcategorias:
+        cuidados = service_cuidado_pessoal.get_cuidados_by_subcategoria(db, subcategoria.id)
+        cuidados_pessoais.extend(cuidados)
     if not cuidados_pessoais:
         raise HTTPException(status_code=404, detail="Nenhum Cuidado Pessoal encontrado para esta subcategoria")
     return cuidados_pessoais    

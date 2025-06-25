@@ -21,7 +21,7 @@ def get_all_armazems(db: Session = Depends(get_db)):
 def get_armazem_by_id(id: int, db: Session = Depends(get_db)):
     armazem = service_armazem.get_armazem_by_id(db, id)
     if not armazem:
-        raise HTTPException(status_code=404, detail="Armazem não encontrado")
+        raise HTTPException(status_code=404, detail="Local de armazenamento não encontrado")
     return armazem
 
 @router.put("/{id}", response_model=ArmazemRead)

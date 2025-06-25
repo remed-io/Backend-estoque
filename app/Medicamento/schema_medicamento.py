@@ -4,9 +4,11 @@ from typing import Optional
 class MedicamentoBase(BaseModel):
     nome: str = Field(..., max_length=100)
     descricao: Optional[str] = Field(None, max_length=255)
+    dosagem: Optional[str] = Field(None, max_length=50)
     principio_ativo: Optional[str] = Field(None, max_length=100)
     tarja: Optional[str] = Field(None, max_length=50)
-    restricoes: Optional[str] = None
+    necessita_receita: Optional[bool] = False
+    forma_farmaceutica: Optional[str] = Field(None, max_length=50)
     fabricante: Optional[str] = Field(None, max_length=100)
     registro_anvisa: Optional[str] = Field(None, max_length=50)
 

@@ -5,7 +5,7 @@ from app.Fornecedor.schema_fornecedor import FornecedorCreate
 
 def create_fornecedor(db: Session, fornecedor: FornecedorCreate):
     # Verifica se CNPJ já existe
-    existing = db.query(Fornecedor).filter(Fornecedor.cnpj == fornecedor.cnpj).first
+    existing = db.query(Fornecedor).filter(Fornecedor.cnpj == fornecedor.cnpj).first()
     if existing:
         raise HTTPException(status_code=400, detail="CNPJ já cadastrado")
     

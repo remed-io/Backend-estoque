@@ -5,6 +5,9 @@ from app.Armazem.model_armazem import Armazem
 from app.Armazem.schema_armazem import ArmazemCreate
 
 def create_armazem(db: Session, armazem: ArmazemCreate):
+    existente = db.query(Armazem).filter(Armazem.local_armazem == armazem.local_armazem).first()
+    if existente:
+        raise HTTPException(status_code=400, detail="Já existe um local de armazenamento cadastrado com este nome.")
     db_armazem = Armazem(**armazem.dict())
     db.add(db_armazem)
     db.commit()
@@ -20,7 +23,7 @@ def get_armazem_by_id(db: Session, id: int):
 def update_armazem(db: Session, id: int, armazem: ArmazemCreate):
     db_armazem = db.query(Armazem).filter(Armazem.id == id).first()
     if not db_armazem:
-        raise HTTPException(status_code=404, detail="Armazem não encontrado")
+        raise HTTPException(status_code=404, detail="Local de armazenamento não encontrado")
     for key, value in armazem.dict().items():
         setattr(db_armazem, key, value)
     db.commit()
@@ -30,7 +33,7 @@ def update_armazem(db: Session, id: int, armazem: ArmazemCreate):
 def delete_armazem(db: Session, id: int):
     db_armazem = db.query(Armazem).filter(Armazem.id == id).first()
     if not db_armazem:
-        raise HTTPException(status_code=404, detail="Armazem não encontrado")
+        raise HTTPException(status_code=404, detail="Local de armazenamento não encontrado")
     db.delete(db_armazem)
     db.commit()
-    return {"message": "Armazem deletado com sucesso"}
+    return {"message": "Local de armazenamento deletado com sucesso"}

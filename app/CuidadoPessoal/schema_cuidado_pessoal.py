@@ -6,7 +6,6 @@ class CuidadoPessoalBase(BaseModel):
     nome: str = Field(..., max_length=100)
     descricao: Optional[str] = Field(None, max_length=255)
     subcategoria_id: Optional[int] = None
-    forma: Optional[str] = Field(None, max_length=50)
     quantidade: Optional[str] = Field(None, max_length=20)
     volume: Optional[str] = Field(None, max_length=20)
     uso_recomendado: Optional[str] = Field(None, max_length=100)
