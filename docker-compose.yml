@@ -32,6 +32,8 @@ services:
     working_dir: /code
     depends_on:
       - db
+    environment:
+      - DATABASE_URL=sqlite:///:memory:
 
 volumes:
   postgres_data:
