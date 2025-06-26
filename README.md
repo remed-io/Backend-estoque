@@ -1,4 +1,4 @@
-# Temed.io - Backend 💊
+# ReMed.io - Backend 🧪
 
 API de gerenciamento de estoque para farmácias, desenvolvida em **FastAPI** e **PostgreSQL**.  
 Permite o cadastro, consulta e movimentação de medicamentos, suplementos alimentares e produtos de cuidado pessoal, com controle de fornecedores, armazéns e rastreabilidade de estoque.
