@@ -25,6 +25,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   test:
+    container_name: remedio-test
     build: .
     command: pytest --maxfail=1 --disable-warnings --tb=short
     volumes:

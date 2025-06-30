@@ -16,7 +16,4 @@ class CuidadoPessoal(Base):
     fabricante = Column(String(100))
 
     subcategoria = relationship("SubcategoriaCuidadoPessoal", back_populates="produtos")
-    itens_estoque = relationship("ItemEstoque", back_populates="produto_cuidado_pessoal")
-    
-    def __str__(self):
-        return self.nome    
+    itens_estoque = relationship("ItemEstoque", back_populates="cuidado_pessoal")

@@ -88,6 +88,8 @@ CREATE TABLE item_estoque (
     produto_cuidado_pessoal_id INT REFERENCES cuidado_pessoal(id),
     produto_suplemento_alimentar_id INT REFERENCES suplemento_alimentar(id),
     tipo_produto VARCHAR(20) NOT NULL CHECK (tipo_produto IN ('medicamento', 'cuidado_pessoal', 'suplemento_alimentar')),
+    produto_nome VARCHAR(100) NOT NULL,
+    produto_id INT NOT NULL,
 
     CHECK (
         ((produto_medicamento_id IS NOT NULL)::int +
@@ -131,6 +133,6 @@ CREATE TABLE restricao_suplemento (
 
 -- Índices para performance
 CREATE INDEX idx_item_armazenado ON item_armazenado(armazem_id, item_estoque_id);
-CREATE INDEX idx_item_estoque_produto ON item_estoque(medicamento_id, cuidado_pessoal_id, suplemento_alimentar_id);
+CREATE INDEX idx_item_estoque_produto ON item_estoque(produto_medicamento_id, produto_cuidado_pessoal_id, produto_suplemento_alimentar_id);
 CREATE INDEX idx_movimentacao_estoque ON movimentacao_estoque(item_estoque_id, data_movimentacao);
 CREATE INDEX idx_restricao_suplemento ON restricao_suplemento(suplemento_alimentar_id);

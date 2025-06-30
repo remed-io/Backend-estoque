@@ -14,7 +14,4 @@ class SuplementoAlimentar(Base):
     fabricante = Column(String(100))
     registro_anvisa = Column(String(50))
 
-    itens_estoque = relationship("ItemEstoque", back_populates="produto_suplemento_alimentar")
-
-    def __str__(self):
-        return self.nome
+    itens_estoque = relationship("ItemEstoque", back_populates="suplemento_alimentar")

@@ -1,4 +1,4 @@
-docker exec -it b36416523e8b psql -U postgres
+docker exec -it remedio-db plsql -U postgres -d postgres
 psql (15.13 (Debian 15.13-1.pgdg120+1))
 Type "help" for help.
 
@@ -10,31 +10,78 @@ postgres=# \l
  remediodb | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | 
  template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/postgres          +
            |          |          |            |            |            |                 | postgres=CTc/postgres
- template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/postgres          +
-           |          |          |            |            |            |                 | postgres=CTc/postgres
-(4 rows)
-
 postgres=# \c remediodb
 You are now connected to database "remediodb" as user "postgres".
 remediodb=# \dt
-                   List of relations
- Schema |            Name            | Type  |  Owner   
---------+----------------------------+-------+----------
- public | armazem              | table | postgres
- public | cuidadopessoal             | table | postgres
- public | fornecedor                 | table | postgres
- public | funcionario                | table | postgres
- public | implementoalimentar        | table | postgres
- public | itemarmazenado             | table | postgres
- public | itemestoque                | table | postgres
- public | medicamento                | table | postgres
- public | movimentacaoestoque        | table | postgres
- public | restricao                  | table | postgres
- public | restricaosuplemento        | table | postgres
- public | subcategoriacuidadopessoal | table | postgres
-(12 rows)
+                    List of relations
+ Schema |             Name             | Type  |  Owner   
+--------+------------------------------+-------+----------
+ public | armazem                      | table | postgres
+ public | cuidado_pessoal              | table | postgres
+ public | fornecedor                   | table | postgres
+ public | funcionario                  | table | postgres
+ public | item_armazenado              | table | postgres
+ public | item_estoque                 | table | postgres
+ public | medicamento                  | table | postgres
+ public | movimentacao_estoque         | table | postgres
+ public | restricao_alimentar          | table | postgres
+ public | restricao_suplemento         | table | postgres
 
 remediodb=# SELECT * from armazem;
+
  id | local_armazem 
-----+---------------------
+----+---------------
+(0 rows)
+
+remediodb=# SELECT * from cuidado_pessoal;
+
+ id | nome | descricao | subcategoria_id | quantidade | volume | uso_recomendado | publico_alvo | fabricante 
+----+------+-----------+-----------------+------------+--------+-----------------+--------------+------------
+(0 rows)
+
+remediodb=# SELECT * from fornecedor;
+
+ id | nome | cnpj | contato 
+----+------+------+---------
+(0 rows)
+
+remediodb=# SELECT * from funcionario;
+
+ id | nome | cpf | email | senha_hash | cargo | data_contratacao 
+----+------+-----+-------+------------+-------+------------------
+(0 rows)
+
+remediodb=# SELECT * from item_armazenado;
+ id | armazem_id | item_estoque_id | quantidade | data_atualizacao 
+----+------------+-----------------+------------+------------------
+(0 rows)
+
+remediodb=# SELECT * from item_estoque;
+
+ id | codigo_barras | fornecedor_id | preco | lote | data_fabricacao | data_validade | produto_medicamento_id | produto_cuidado_pessoal_id | produto_suplemento_alimentar_id | tipo_produto 
+----+---------------+---------------+-------+------+-----------------+---------------+------------------------+----------------------------+---------------------------------+--------------
+(0 rows)
+
+remediodb=# SELECT * from medicamento;
+
+ id | nome | descricao | dosagem | principio_ativo | tarja | necessita_receita | forma_farmaceutica | fabricante | registro_anvisa 
+----+------+-----------+---------+-----------------+-------+-------------------+--------------------+------------+-----------------
+(0 rows)
+
+remediodb=# SELECT * from movimentacao_estoque;
+
+ id | item_estoque_id | funcionario_id | data_movimentacao | tipo | quantidade | cpf_comprador | nome_comprador | receita_digital | observacoes 
+----+-----------------+----------------+-------------------+------+------------+---------------+----------------+-----------------+-------------
+(0 rows)
+
+remediodb=# SELECT * from restricao_alimentar;
+
+ id | nome 
+----+------
+(0 rows)
+
+remediodb=# select * from restricao_suplemento;
+
+ suplemento_alimentar_id | restricao_alimentar_id | severidade | observacoes 
+-------------------------+------------------------+------------+-------------
 (0 rows)

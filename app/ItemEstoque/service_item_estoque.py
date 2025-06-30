@@ -16,23 +16,23 @@ def create_itemestoque(db: Session, item: ItemEstoqueCreate):
     produto_nome = None
     tipo_produto = None
 
-    if item.medicamento_id:
+    if item.produto_medicamento_id:
         tipo_produto = "medicamento"
-        produto = db.query(Medicamento).filter(Medicamento.id == item.medicamento_id).first()
+        produto = db.query(Medicamento).filter(Medicamento.id == item.produto_medicamento_id).first()
         if not produto:
             raise HTTPException(status_code=400, detail="Medicamento não encontrado")
         produto_id = produto.id
         produto_nome = produto.nome
-    elif item.cuidado_pessoal_id:
+    elif item.produto_cuidado_pessoal_id:
         tipo_produto = "cuidado_pessoal"
-        produto = db.query(CuidadoPessoal).filter(CuidadoPessoal.id == item.cuidado_pessoal_id).first()
+        produto = db.query(CuidadoPessoal).filter(CuidadoPessoal.id == item.produto_cuidado_pessoal_id).first()
         if not produto:
             raise HTTPException(status_code=400, detail="Cuidado Pessoal não encontrado")
         produto_id = produto.id
         produto_nome = produto.nome
-    elif item.suplemento_alimentar_id:
+    elif item.produto_suplemento_alimentar_id:
         tipo_produto = "suplemento_alimentar"
-        produto = db.query(SuplementoAlimentar).filter(SuplementoAlimentar.id == item.suplemento_alimentar_id).first()
+        produto = db.query(SuplementoAlimentar).filter(Medicamento.id == item.produto_suplemento_alimentar_id).first()
         if not produto:
             raise HTTPException(status_code=400, detail="Suplemento Alimentar não encontrado")
         produto_id = produto.id
@@ -43,6 +43,7 @@ def create_itemestoque(db: Session, item: ItemEstoqueCreate):
     data = item.dict().copy()
     data.pop("produto_id", None)
     data.pop("produto_nome", None)
+    data.pop("tipo_produto", None)
     db_item = ItemEstoque(**data, produto_id=produto_id, produto_nome=produto_nome, tipo_produto=tipo_produto)
     db.add(db_item)
     db.commit()
@@ -59,8 +60,40 @@ def update_item(db: Session, id: int, item: ItemEstoqueCreate):
     db_item = db.query(ItemEstoque).filter(ItemEstoque.id == id).first()
     if not db_item:
         raise HTTPException(status_code=404, detail="Item não encontrado")
+
+    produto_id = None
+    produto_nome = None
+    tipo_produto = None
+
+    if item.produto_medicamento_id:
+        tipo_produto = "medicamento"
+        produto = db.query(Medicamento).filter(Medicamento.id == item.produto_medicamento_id).first()
+        if not produto:
+            raise HTTPException(status_code=400, detail="Medicamento não encontrado")
+        produto_id = produto.id
+        produto_nome = produto.nome
+    elif item.produto_cuidado_pessoal_id:
+        tipo_produto = "cuidado_pessoal"
+        produto = db.query(CuidadoPessoal).filter(CuidadoPessoal.id == item.produto_cuidado_pessoal_id).first()
+        if not produto:
+            raise HTTPException(status_code=400, detail="Cuidado Pessoal não encontrado")
+        produto_id = produto.id
+        produto_nome = produto.nome
+    elif item.produto_suplemento_alimentar_id:
+        tipo_produto = "suplemento_alimentar"
+        produto = db.query(SuplementoAlimentar).filter(Medicamento.id == item.produto_suplemento_alimentar_id).first()
+        if not produto:
+            raise HTTPException(status_code=400, detail="Suplemento Alimentar não encontrado")
+        produto_id = produto.id
+        produto_nome = produto.nome
+    else:
+        raise HTTPException(status_code=400, detail="É necessário informar um produto válido.")
+
     for key, value in item.dict().items():
         setattr(db_item, key, value)
+    db_item.produto_id = produto_id
+    db_item.produto_nome = produto_nome
+    db_item.tipo_produto = tipo_produto
     db.commit()
     db.refresh(db_item)
     return db_item
