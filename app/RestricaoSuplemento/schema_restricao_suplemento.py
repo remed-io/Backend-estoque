@@ -12,4 +12,4 @@ class RestricaoSuplementoCreate(RestricaoSuplementoBase):
 
 class RestricaoSuplementoRead(RestricaoSuplementoBase):
     class Config:
-        orm_mode = True 
+        from_attributes = True 

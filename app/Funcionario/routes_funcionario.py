@@ -8,8 +8,15 @@ from app.Funcionario.schema_funcionario import (
     FuncionarioLogin
 )
 from app.Funcionario import service_funcionario
+from app.security import create_access_token
+from datetime import timedelta
+from fastapi import Response
+import logging
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 router = APIRouter(prefix="/funcionario", tags=["Funcionário"])
+
+oauth2_scheme = HTTPBearer()
 
 @router.post("/", response_model=FuncionarioRead)
 def create_funcionario(funcionario: FuncionarioCreate, db: Session = Depends(get_db)):
@@ -39,6 +46,21 @@ def login_funcionario(credentials: FuncionarioLogin, db: Session = Depends(get_d
     if not funcionario:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
     return funcionario
+
+@router.post("/login-jwt")
+def login_jwt(credentials: FuncionarioLogin, db: Session = Depends(get_db)):
+    funcionario = service_funcionario.authenticate_funcionario(db, credentials.email, credentials.senha)
+    if not funcionario:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
+    access_token = create_access_token(
+        data={"sub": funcionario.id},
+        expires_delta=timedelta(minutes=60)
+    )
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "message": f"Login realizado com sucesso para o funcionário: {funcionario.nome}"
+    }
 
 @router.put("/{id}", response_model=FuncionarioRead)
 def update_funcionario(id: int, funcionario: FuncionarioCreate, db: Session = Depends(get_db)):
