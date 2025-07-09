@@ -14,7 +14,8 @@ class MovimentacaoEstoque(Base):
     cpf_comprador = Column(String(20), nullable=True)
     nome_comprador = Column(String(100), nullable=True)
     receita_digital = Column(String(255), nullable=True)
-    armazem_id = Column(Integer, ForeignKey('Armazem.id'), nullable=False)
+    armazem_id = Column(Integer, ForeignKey('armazem.id'), nullable=False)
 
     item = relationship("ItemEstoque")
     responsavel = relationship("Funcionario")
+    armazem = relationship("Armazem")

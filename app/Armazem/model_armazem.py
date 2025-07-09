@@ -8,7 +8,8 @@ class Armazem(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     local_armazem = Column(String(100), nullable=False, unique=True)
+    quantidade_minima = Column(Integer, nullable=False, default=0)
     __table_args__ = (UniqueConstraint('local_armazem', name='uix_local_armazem'),)
     
     def __str__(self):
-        return self.nome
+        return self.local_armazem

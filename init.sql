@@ -1,7 +1,8 @@
 -- Tabela armazem
 CREATE TABLE armazem (
     id SERIAL PRIMARY KEY,
-    local_armazem VARCHAR(100) NOT NULL UNIQUE
+    local_armazem VARCHAR(100) NOT NULL UNIQUE,
+    quantidade_minima INTEGER NOT NULL DEFAULT 0
 );
 
 -- Tabela subcategoria_cuidado_pessoal
@@ -111,15 +112,15 @@ CREATE TABLE item_armazenado (
 -- Tabela movimentacao_estoque
 CREATE TABLE movimentacao_estoque (
     id SERIAL PRIMARY KEY,
-    item_estoque_id INT NOT NULL REFERENCES item_estoque(id),
-    funcionario_id INT REFERENCES funcionario(id),
-    data_movimentacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    item_id INT NOT NULL REFERENCES item_estoque(id),
+    responsavel_id INT REFERENCES funcionario(id),
+    data TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('entrada', 'saida')),
     quantidade INT NOT NULL CHECK (quantidade > 0),
     cpf_comprador VARCHAR(14),
     nome_comprador VARCHAR(100),
     receita_digital TEXT,
-    observacoes TEXT
+    armazem_id INT NOT NULL REFERENCES armazem(id)
 );
 
 -- Tabela restricao_suplemento
@@ -134,5 +135,6 @@ CREATE TABLE restricao_suplemento (
 -- Índices para performance
 CREATE INDEX idx_item_armazenado ON item_armazenado(armazem_id, item_estoque_id);
 CREATE INDEX idx_item_estoque_produto ON item_estoque(produto_medicamento_id, produto_cuidado_pessoal_id, produto_suplemento_alimentar_id);
-CREATE INDEX idx_movimentacao_estoque ON movimentacao_estoque(item_estoque_id, data_movimentacao);
+CREATE INDEX idx_movimentacao_estoque ON movimentacao_estoque(item_id, data);
+CREATE INDEX idx_movimentacao_armazem ON movimentacao_estoque(armazem_id, data);
 CREATE INDEX idx_restricao_suplemento ON restricao_suplemento(suplemento_alimentar_id);
