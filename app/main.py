@@ -6,7 +6,6 @@ from sqlalchemy.orm import sessionmaker
 
 from app.Armazem.routes_armazem import router as router_armazem
 from app.CuidadoPessoal.routes_cuidado_pessoal import router as router_cuidado_pessoal
-from app.Farmacia.routes_farmacia import router as router_farmacia
 from app.Fornecedor.routes_fornecedor import router as router_fornecedor
 from app.Funcionario.routes_funcionario import router as router_funcionario
 from app.ItemEstoque.routes_item_estoque import router as router_item_estoque
@@ -23,7 +22,6 @@ app = FastAPI()
 
 app.include_router(router_armazem)
 app.include_router(router_cuidado_pessoal)
-app.include_router(router_farmacia)
 app.include_router(router_fornecedor)
 app.include_router(router_funcionario)
 app.include_router(router_item_estoque)
