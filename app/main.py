@@ -16,6 +16,7 @@ from app.SubcategoriaCuidadoPessoal.routes_subcategoria_cuidado_pessoal import r
 from app.SuplementoAlimentar.routes_suplemento_alimentar import router as router_suplemento_alimentar
 from app.ItemArmazenado.routes_item_armazenado import router as router_item_armazenado
 from app.RestricaoSuplemento.routes_restricao_suplemento import router as router_restricao_suplemento
+from app.ConsultaEstoque.routes_consulta_estoque import router as router_consulta_estoque
 
 
 app = FastAPI()
@@ -31,7 +32,8 @@ app.include_router(router_restricao_alimentar)
 app.include_router(router_subcategoria_cuidado_pessoal)
 app.include_router(router_suplemento_alimentar)
 app.include_router(router_item_armazenado)
-app.include_router(router_restricao_suplemento)  
+app.include_router(router_restricao_suplemento)
+app.include_router(router_consulta_estoque)  
 
 
 @app.get("/")

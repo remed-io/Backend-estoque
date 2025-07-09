@@ -1,4 +1,4 @@
-docker exec -it remedio-db plsql -U postgres -d postgres
+docker exec -it remedio-db psql -U postgres -d postgres
 psql (15.13 (Debian 15.13-1.pgdg120+1))
 Type "help" for help.
 
