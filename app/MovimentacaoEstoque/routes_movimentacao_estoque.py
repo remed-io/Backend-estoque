@@ -13,7 +13,7 @@ router = APIRouter(prefix="/movimentacao-estoque", tags=["Movimentação Estoque
 def create_movimentacao(movimentacao: MovimentacaoEstoqueCreate, db: Session = Depends(get_db), usuario: Funcionario = Depends(get_current_user)):
     # Forçar o responsável para o usuário autenticado
     movimentacao_dict = movimentacao.dict()
-    movimentacao_dict["responsavel_id"] = usuario.id
+    movimentacao_dict["funcionario_id"] = usuario.id
     from app.MovimentacaoEstoque.schema_movimentacao_estoque import MovimentacaoEstoqueCreate as MovCreate
     nova_movimentacao = MovCreate(**movimentacao_dict)
     return service_movimentacao_estoque.create_movimentacaoestoque(db, nova_movimentacao)

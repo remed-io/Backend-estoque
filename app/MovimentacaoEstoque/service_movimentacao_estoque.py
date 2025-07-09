@@ -7,7 +7,7 @@ from sqlalchemy import and_
 
 def create_movimentacaoestoque(db: Session, movimentacao: MovimentacaoEstoqueCreate):
     # Buscar o item armazenado correspondente
-    item_armazenado = db.query(ItemArmazenado).filter(and_(ItemArmazenado.item_estoque_id == movimentacao.item_id, ItemArmazenado.armazem_id == movimentacao.armazem_id)).first()
+    item_armazenado = db.query(ItemArmazenado).filter(and_(ItemArmazenado.item_estoque_id == movimentacao.item_estoque_id, ItemArmazenado.armazem_id == movimentacao.armazem_id)).first()
     if not item_armazenado:
         raise HTTPException(status_code=404, detail="Item não encontrado no armazém informado")
     if movimentacao.tipo.lower() == 'saida':
