@@ -19,6 +19,7 @@ from app.RestricaoSuplemento.routes_restricao_suplemento import router as router
 from app.ConsultaEstoque.routes_consulta_estoque import router as router_consulta_estoque
 from app.Relatorios.routes_relatorio_vencimento import router as router_relatorio_vencimento
 from app.Relatorios.routes_relatorio_movimentacao import router as router_relatorio_movimentacao
+from app.Alertas.routes_alertas import router as router_alertas
 
 
 app = FastAPI()
@@ -38,6 +39,7 @@ app.include_router(router_restricao_suplemento)
 app.include_router(router_consulta_estoque)
 app.include_router(router_relatorio_vencimento)  
 app.include_router(router_relatorio_movimentacao)  
+app.include_router(router_alertas)
 
 
 @app.get("/")

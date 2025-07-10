@@ -132,9 +132,72 @@ CREATE TABLE restricao_suplemento (
     PRIMARY KEY (suplemento_alimentar_id, restricao_alimentar_id)
 );
 
--- Índices para performance
-CREATE INDEX idx_item_armazenado ON item_armazenado(armazem_id, item_estoque_id);
-CREATE INDEX idx_item_estoque_produto ON item_estoque(produto_medicamento_id, produto_cuidado_pessoal_id, produto_suplemento_alimentar_id);
-CREATE INDEX idx_movimentacao_estoque ON movimentacao_estoque(item_estoque_id, data_movimentacao);
-CREATE INDEX idx_movimentacao_armazem ON movimentacao_estoque(armazem_id, data_movimentacao);
-CREATE INDEX idx_restricao_suplemento ON restricao_suplemento(suplemento_alimentar_id);
+-- Tabelas para Sistema de Alertas (H9)
+CREATE TABLE IF NOT EXISTS alerta_estoque (
+    id SERIAL PRIMARY KEY,
+    tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('estoque_critico', 'estoque_baixo', 'produto_vencido', 'proximo_vencimento', 'falta_produto')),
+    prioridade VARCHAR(20) NOT NULL CHECK (prioridade IN ('baixa', 'media', 'alta', 'critica')),
+    titulo VARCHAR(200) NOT NULL,
+    descricao TEXT NOT NULL,
+    item_estoque_id INTEGER NOT NULL REFERENCES item_estoque(id) ON DELETE CASCADE,
+    armazem_id INTEGER NOT NULL REFERENCES armazem(id) ON DELETE CASCADE,
+    quantidade_atual INTEGER NOT NULL DEFAULT 0,
+    quantidade_minima INTEGER NOT NULL DEFAULT 0,
+    valor_unitario DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    valor_total_impactado DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    dias_para_vencimento INTEGER,
+    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    data_resolucao TIMESTAMP,
+    resolvido BOOLEAN NOT NULL DEFAULT FALSE,
+    observacoes TEXT,
+    
+    CONSTRAINT check_alerta_valores_positivos CHECK (
+        quantidade_atual >= 0 AND 
+        quantidade_minima >= 0 AND 
+        valor_unitario >= 0 AND 
+        valor_total_impactado >= 0
+    )
+);
+
+CREATE TABLE IF NOT EXISTS notificacao_alerta (
+    id SERIAL PRIMARY KEY,
+    alerta_id INTEGER NOT NULL REFERENCES alerta_estoque(id) ON DELETE CASCADE,
+    funcionario_id INTEGER REFERENCES funcionario(id) ON DELETE SET NULL,
+    tipo_notificacao VARCHAR(20) NOT NULL CHECK (tipo_notificacao IN ('email', 'push', 'sms')),
+    enviado BOOLEAN NOT NULL DEFAULT FALSE,
+    data_envio TIMESTAMP,
+    tentativas_envio INTEGER NOT NULL DEFAULT 0,
+    erro_envio TEXT,
+    
+    CONSTRAINT check_tentativas_positivas CHECK (tentativas_envio >= 0)
+);
+
+CREATE TABLE IF NOT EXISTS configuracao_alertas (
+    id SERIAL PRIMARY KEY,
+    chave VARCHAR(100) NOT NULL UNIQUE,
+    valor VARCHAR(500) NOT NULL,
+    descricao TEXT,
+    data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Índices para performance dos alertas
+CREATE INDEX IF NOT EXISTS idx_alerta_tipo_prioridade ON alerta_estoque(tipo, prioridade);
+CREATE INDEX IF NOT EXISTS idx_alerta_resolvido ON alerta_estoque(resolvido);
+CREATE INDEX IF NOT EXISTS idx_alerta_item_armazem ON alerta_estoque(item_estoque_id, armazem_id);
+CREATE INDEX IF NOT EXISTS idx_alerta_data_criacao ON alerta_estoque(data_criacao DESC);
+CREATE INDEX IF NOT EXISTS idx_alerta_dias_vencimento ON alerta_estoque(dias_para_vencimento) WHERE dias_para_vencimento IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_notificacao_alerta_id ON notificacao_alerta(alerta_id);
+CREATE INDEX IF NOT EXISTS idx_notificacao_funcionario ON notificacao_alerta(funcionario_id);
+CREATE INDEX IF NOT EXISTS idx_notificacao_enviado ON notificacao_alerta(enviado);
+
+CREATE INDEX IF NOT EXISTS idx_config_chave ON configuracao_alertas(chave);
+
+-- Configurações padrão do sistema de alertas
+INSERT INTO configuracao_alertas (chave, valor, descricao) VALUES
+('dias_vencimento_critico', '3', 'Dias para alerta crítico de vencimento'),
+('dias_vencimento_atencao', '7', 'Dias para alerta de atenção sobre vencimento'),
+('dias_vencimento_aviso', '30', 'Dias para aviso de vencimento próximo'),
+('ativar_alertas_email', 'false', 'Enviar alertas por email'),
+('ativar_alertas_push', 'true', 'Exibir alertas no sistema')
+ON CONFLICT (chave) DO NOTHING;
