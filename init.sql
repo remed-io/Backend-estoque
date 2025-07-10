@@ -133,7 +133,7 @@ CREATE TABLE restricao_suplemento (
 );
 
 -- Tabelas para Sistema de Alertas (H9)
-CREATE TABLE IF NOT EXISTS alerta_estoque (
+CREATE TABLE alerta_estoque (
     id SERIAL PRIMARY KEY,
     tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('estoque_critico', 'estoque_baixo', 'produto_vencido', 'proximo_vencimento', 'falta_produto')),
     prioridade VARCHAR(20) NOT NULL CHECK (prioridade IN ('baixa', 'media', 'alta', 'critica')),
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS alerta_estoque (
     )
 );
 
-CREATE TABLE IF NOT EXISTS notificacao_alerta (
+CREATE TABLE notificacao_alerta (
     id SERIAL PRIMARY KEY,
     alerta_id INTEGER NOT NULL REFERENCES alerta_estoque(id) ON DELETE CASCADE,
     funcionario_id INTEGER REFERENCES funcionario(id) ON DELETE SET NULL,
@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS notificacao_alerta (
     CONSTRAINT check_tentativas_positivas CHECK (tentativas_envio >= 0)
 );
 
-CREATE TABLE IF NOT EXISTS configuracao_alertas (
+CREATE TABLE configuracao_alertas (
     id SERIAL PRIMARY KEY,
     chave VARCHAR(100) NOT NULL UNIQUE,
     valor VARCHAR(500) NOT NULL,

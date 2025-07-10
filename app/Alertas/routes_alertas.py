@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from app.settings import get_db
-from app.security import get_current_user
-from app.Funcionario.model_funcionario import Funcionario
+
+
 
 from .schema_alertas import (
     AlertaEstoque,
@@ -26,7 +26,6 @@ router = APIRouter(
 def verificar_alertas(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Verifica e gera todos os alertas do sistema.
@@ -43,7 +42,6 @@ def verificar_alertas(
 @router.get("/resumo", response_model=ResumoAlertas)
 def obter_resumo_alertas(
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Obtém resumo estatístico dos alertas do sistema.
@@ -56,7 +54,6 @@ def obter_resumo_alertas(
 def obter_alertas_criticos(
     limite: int = Query(10, description="Número máximo de alertas críticos", ge=1, le=50),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Obtém os alertas mais críticos do sistema.
@@ -73,7 +70,6 @@ def listar_alertas(
     apenas_nao_resolvidos: bool = Query(True, description="Apenas alertas não resolvidos"),
     dias_vencimento_max: Optional[int] = Query(None, description="Máximo de dias para vencimento"),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Lista alertas com filtros opcionais.
@@ -97,7 +93,6 @@ def gerar_relatorio_completo(
     armazem_id: Optional[int] = Query(None, description="Filtrar por armazém"),
     apenas_nao_resolvidos: bool = Query(True, description="Apenas alertas não resolvidos"),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Gera relatório completo de alertas.
@@ -127,7 +122,6 @@ def resolver_alerta(
     alerta_id: int,
     observacoes: Optional[str] = Query(None, description="Observações sobre a resolução"),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Marca um alerta como resolvido.
@@ -145,7 +139,6 @@ def resolver_alerta(
 def atualizar_todos_alertas(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Força atualização completa de todos os alertas do sistema.
@@ -163,7 +156,6 @@ def atualizar_todos_alertas(
 @router.get("/dashboard", response_model=dict)
 def obter_dados_dashboard(
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Obtém dados consolidados para dashboard de alertas.
@@ -184,7 +176,6 @@ def obter_alertas_por_tipo(
     tipo: TipoAlerta,
     armazem_id: Optional[int] = Query(None, description="Filtrar por armazém"),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Obtém alertas de um tipo específico.
@@ -205,7 +196,6 @@ def obter_alertas_por_armazem(
     tipo: Optional[TipoAlerta] = Query(None, description="Filtrar por tipo de alerta"),
     prioridade: Optional[PrioridadeAlerta] = Query(None, description="Filtrar por prioridade"),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """
     Obtém alertas de um armazém específico.

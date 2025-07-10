@@ -11,7 +11,7 @@ from app.Medicamento.model_medicamento import Medicamento
 from app.CuidadoPessoal.model_cuidado_pessoal import CuidadoPessoal
 from app.SuplementoAlimentar.model_suplemento_alimentar import SuplementoAlimentar
 from app.Armazem.model_armazem import Armazem
-from app.Funcionario.model_funcionario import Funcionario
+
 
 from .schema_relatorio_movimentacao import (
     FiltroRelatorioMovimentacao,

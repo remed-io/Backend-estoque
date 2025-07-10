@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-from app.Funcionario.model_funcionario import Funcionario
+
 from app.Funcionario.schema_funcionario import FuncionarioCreate
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

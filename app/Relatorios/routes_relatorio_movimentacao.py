@@ -6,8 +6,8 @@ from datetime import date, datetime
 import io
 
 from app.settings import get_db
-from app.security import get_current_user
-from app.Funcionario.model_funcionario import Funcionario
+
+
 
 from .schema_relatorio_movimentacao import (
     FiltroRelatorioMovimentacao,
@@ -33,7 +33,6 @@ def obter_relatorio_movimentacoes(
     funcionario_id: Optional[int] = Query(None, description="ID do funcionário responsável"),
     item_id: Optional[int] = Query(None, description="ID do item de estoque"),
     db: Session = Depends(get_db),
-    current_user: Funcionario = Depends(get_current_user)
 ):
     """
     Gera relatório completo de movimentações de estoque com filtros opcionais.
@@ -76,7 +75,6 @@ def obter_estatisticas_movimentacoes(
     data_inicio: Optional[date] = Query(None, description="Data inicial do período"),
     data_fim: Optional[date] = Query(None, description="Data final do período"),
     db: Session = Depends(get_db),
-    current_user: Funcionario = Depends(get_current_user)
 ):
     """
     Obtém apenas as estatísticas das movimentações para um período.
@@ -110,7 +108,6 @@ def exportar_movimentacoes_csv(
     funcionario_id: Optional[int] = Query(None, description="ID do funcionário responsável"),
     item_id: Optional[int] = Query(None, description="ID do item de estoque"),
     db: Session = Depends(get_db),
-    current_user: Funcionario = Depends(get_current_user)
 ):
     """
     Exporta relatório de movimentações em formato CSV.
@@ -160,7 +157,6 @@ def obter_movimentacoes_por_produto(
     data_inicio: Optional[date] = Query(None, description="Data inicial do período"),
     data_fim: Optional[date] = Query(None, description="Data final do período"),
     db: Session = Depends(get_db),
-    current_user: Funcionario = Depends(get_current_user)
 ):
     """
     Obtém movimentações específicas de um produto.
@@ -189,7 +185,6 @@ def obter_movimentacoes_por_armazem(
     data_inicio: Optional[date] = Query(None, description="Data inicial do período"),
     data_fim: Optional[date] = Query(None, description="Data final do período"),
     db: Session = Depends(get_db),
-    current_user: Funcionario = Depends(get_current_user)
 ):
     """
     Obtém movimentações específicas de um armazém.
@@ -218,7 +213,6 @@ def obter_movimentacoes_por_funcionario(
     data_inicio: Optional[date] = Query(None, description="Data inicial do período"),
     data_fim: Optional[date] = Query(None, description="Data final do período"),
     db: Session = Depends(get_db),
-    current_user: Funcionario = Depends(get_current_user)
 ):
     """
     Obtém movimentações realizadas por um funcionário específico.

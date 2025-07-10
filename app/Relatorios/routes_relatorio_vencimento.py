@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends, Query, HTTPException, Response
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from app.settings import get_db
-from app.security import get_current_user
-from app.Funcionario.model_funcionario import Funcionario
+
+
 from app.Relatorios.schema_relatorio_vencimento import (
     RelatorioVencimento,
     FiltroRelatorioVencimento,
@@ -27,7 +27,6 @@ def gerar_relatorio_vencimento(
     valor_minimo: float = Query(None, description="Valor mínimo para incluir", ge=0),
     apenas_com_estoque: bool = Query(True, description="Apenas itens com estoque > 0"),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Gerar relatório completo de produtos vencidos e próximos do vencimento"""
     
@@ -53,7 +52,6 @@ def exportar_relatorio_csv(
     valor_minimo: float = Query(None, description="Valor mínimo para incluir", ge=0),
     apenas_com_estoque: bool = Query(True, description="Apenas itens com estoque > 0"),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Exportar relatório de vencimento em formato CSV"""
     
@@ -84,7 +82,6 @@ def exportar_relatorio_csv(
 @router.get("/vencidos-hoje", response_model=List[ItemVencimento])
 def produtos_vencidos_hoje(
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Produtos que vencem hoje - para dashboard/alertas"""
     return service_relatorio_vencimento.obter_produtos_vencidos_hoje(db)
@@ -93,7 +90,6 @@ def produtos_vencidos_hoje(
 def produtos_criticos(
     dias_limite: int = Query(3, description="Dias limite para considerar crítico", ge=0, le=7),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Produtos em situação crítica (vencimento muito próximo)"""
     return service_relatorio_vencimento.obter_produtos_criticos(db, dias_limite)
@@ -101,7 +97,6 @@ def produtos_criticos(
 @router.get("/resumo-rapido")
 def resumo_vencimento_rapido(
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Resumo rápido para dashboard - produtos críticos dos próximos 7 dias"""
     
@@ -129,7 +124,6 @@ def relatorio_vencimento_por_armazem(
     dias_limite: int = Query(30, description="Dias limite para análise", ge=0, le=365),
     incluir_vencidos: bool = Query(True, description="Incluir produtos já vencidos"),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Relatório de vencimento específico de um armazém"""
     
@@ -148,7 +142,6 @@ def relatorio_vencimento_por_fornecedor(
     dias_limite: int = Query(30, description="Dias limite para análise", ge=0, le=365),
     incluir_vencidos: bool = Query(True, description="Incluir produtos já vencidos"),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Relatório de vencimento específico de um fornecedor"""
     

@@ -2,8 +2,6 @@ from typing import List
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.settings import get_db
-from app.security import get_current_user
-from app.Funcionario.model_funcionario import Funcionario
 from app.ConsultaEstoque.schema_consulta_estoque import (
     ConsultaEstoqueRead,
     FiltroConsultaEstoque,
@@ -19,7 +17,6 @@ router = APIRouter(prefix="/consulta-estoque", tags=["Consulta de Estoque"])
 @router.get("/resumo", response_model=ResumoEstoque)
 def get_resumo_estoque(
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Obter resumo geral do estoque"""
     return service_consulta_estoque.gerar_resumo_estoque(db)
@@ -40,7 +37,6 @@ def consultar_estoque(
     skip: int = Query(0, description="Pular N registros", ge=0),
     limit: int = Query(100, description="Limitar resultados", ge=1, le=1000),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Consultar estoque com filtros"""
     
@@ -76,7 +72,6 @@ def consultar_estoque_detalhado(
     skip: int = Query(0, description="Pular N registros", ge=0),
     limit: int = Query(100, description="Limitar resultados", ge=1, le=1000),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Consultar estoque detalhado com resumo"""
     
@@ -100,7 +95,6 @@ def consultar_estoque_detalhado(
 def consultar_produtos_vencidos(
     dias_limite: int = Query(0, description="Dias limite para vencimento (0=já vencidos)", ge=0),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Consultar produtos vencidos ou próximos do vencimento"""
     return service_consulta_estoque.consultar_produtos_vencidos(db, dias_limite)
@@ -108,7 +102,6 @@ def consultar_produtos_vencidos(
 @router.get("/critico", response_model=List[ConsultaEstoqueRead])
 def consultar_estoque_critico(
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Consultar itens com estoque crítico ou baixo"""
     return service_consulta_estoque.consultar_estoque_critico(db)
@@ -117,7 +110,6 @@ def consultar_estoque_critico(
 def consultar_estoque_por_produto(
     produto_id: int,
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Consultar estoque de um produto específico em todos os armazéns"""
     
@@ -137,7 +129,6 @@ def consultar_estoque_por_armazem(
     skip: int = Query(0, description="Pular N registros", ge=0),
     limit: int = Query(100, description="Limitar resultados", ge=1, le=1000),
     db: Session = Depends(get_db),
-    usuario: Funcionario = Depends(get_current_user)
 ):
     """Consultar todos os itens de um armazém específico"""
     

@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.settings import get_db
-from app.Funcionario.model_funcionario import Funcionario
+
 from app.Funcionario.service_funcionario import get_funcionario_by_id
 
 # Configurações do JWT
