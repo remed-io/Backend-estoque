@@ -21,7 +21,7 @@ class FuncionarioRead(FuncionarioBase):
     data_contratacao: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class FuncionarioLogin(BaseModel):
     email: EmailStr

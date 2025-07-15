@@ -8,6 +8,8 @@ from app.Funcionario.schema_funcionario import (
     FuncionarioLogin
 )
 from app.Funcionario import service_funcionario
+from fastapi import Response
+import logging
 
 router = APIRouter(prefix="/funcionario", tags=["Funcionário"])
 
@@ -33,12 +35,22 @@ def get_funcionario_by_email(email: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Funcionário não encontrado")
     return funcionario
 
-@router.post("/login", response_model=FuncionarioRead)
+@router.post("/login")
 def login_funcionario(credentials: FuncionarioLogin, db: Session = Depends(get_db)):
+    """Login simples que retorna os dados do funcionário se as credenciais estiverem corretas"""
     funcionario = service_funcionario.authenticate_funcionario(db, credentials.email, credentials.senha)
     if not funcionario:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
-    return funcionario
+    return {
+        "success": True,
+        "message": f"Login realizado com sucesso para o funcionário: {funcionario.nome}",
+        "funcionario": {
+            "id": funcionario.id,
+            "nome": funcionario.nome,
+            "email": funcionario.email,
+            "cargo": funcionario.cargo
+        }
+    }
 
 @router.put("/{id}", response_model=FuncionarioRead)
 def update_funcionario(id: int, funcionario: FuncionarioCreate, db: Session = Depends(get_db)):

@@ -1,8 +1,9 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-from app.Funcionario.model_funcionario import Funcionario
+
 from app.Funcionario.schema_funcionario import FuncionarioCreate
+from app.Funcionario.model_funcionario import Funcionario
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -55,7 +56,7 @@ def authenticate_funcionario(db: Session, email: str, password: str):
     funcionario = get_funcionario_by_email(db, email)
     if not funcionario:
         return None
-    if not verify_password(password, funcionario.senha_hash):
+    if not verify_password(password, funcionario.senha_hash):  # type: ignore
         return None
     return funcionario
 
@@ -89,7 +90,7 @@ def update_funcionario(db: Session, id: int, funcionario: FuncionarioCreate):
         setattr(db_funcionario, field, value)
     
     if funcionario.senha:
-        db_funcionario.senha_hash = get_password_hash(funcionario.senha)
+        db_funcionario.senha_hash = get_password_hash(funcionario.senha)  # type: ignore
     
     db.commit()
     db.refresh(db_funcionario)

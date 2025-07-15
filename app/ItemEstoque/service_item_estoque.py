@@ -32,7 +32,7 @@ def create_itemestoque(db: Session, item: ItemEstoqueCreate):
         produto_nome = produto.nome
     elif item.produto_suplemento_alimentar_id:
         tipo_produto = "suplemento_alimentar"
-        produto = db.query(SuplementoAlimentar).filter(Medicamento.id == item.produto_suplemento_alimentar_id).first()
+        produto = db.query(SuplementoAlimentar).filter(SuplementoAlimentar.id == item.produto_suplemento_alimentar_id).first()
         if not produto:
             raise HTTPException(status_code=400, detail="Suplemento Alimentar não encontrado")
         produto_id = produto.id
@@ -81,7 +81,7 @@ def update_item(db: Session, id: int, item: ItemEstoqueCreate):
         produto_nome = produto.nome
     elif item.produto_suplemento_alimentar_id:
         tipo_produto = "suplemento_alimentar"
-        produto = db.query(SuplementoAlimentar).filter(Medicamento.id == item.produto_suplemento_alimentar_id).first()
+        produto = db.query(SuplementoAlimentar).filter(SuplementoAlimentar.id == item.produto_suplemento_alimentar_id).first()
         if not produto:
             raise HTTPException(status_code=400, detail="Suplemento Alimentar não encontrado")
         produto_id = produto.id

@@ -19,7 +19,7 @@ class CuidadoPessoalRead(CuidadoPessoalBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class CuidadoPessoalWithSubcategoria(CuidadoPessoalRead):
     subcategoria_nome: Optional[str]
