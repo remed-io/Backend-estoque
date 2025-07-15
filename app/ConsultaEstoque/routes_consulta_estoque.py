@@ -7,7 +7,6 @@ from app.ConsultaEstoque.schema_consulta_estoque import (
     FiltroConsultaEstoque,
     ResumoEstoque,
     EstoqueDetalhado,
-    StatusEstoque,
     TipoProduto
 )
 from app.ConsultaEstoque import service_consulta_estoque
@@ -51,11 +50,11 @@ def consultar_estoque(
         estoque_baixo=estoque_baixo,
         estoque_critico=estoque_critico,
         quantidade_min=quantidade_min,
-        quantidade_max=quantidade_max
+        quantidade_max=quantidade_max,
+        status=None
     )
     
     return service_consulta_estoque.consultar_estoque(db, filtros, skip, limit)
-
 @router.get("/detalhado", response_model=EstoqueDetalhado)
 def consultar_estoque_detalhado(
     produto_nome: str = Query(None, description="Filtrar por nome do produto"),
@@ -86,7 +85,8 @@ def consultar_estoque_detalhado(
         estoque_baixo=estoque_baixo,
         estoque_critico=estoque_critico,
         quantidade_min=quantidade_min,
-        quantidade_max=quantidade_max
+        quantidade_max=quantidade_max,
+        status=None
     )
     
     return service_consulta_estoque.consultar_estoque_detalhado(db, filtros, skip, limit)
@@ -112,13 +112,22 @@ def consultar_estoque_por_produto(
     db: Session = Depends(get_db),
 ):
     """Consultar estoque de um produto específico em todos os armazéns"""
-    
-    filtros = FiltroConsultaEstoque(
-        # Usar produto_nome vazio e buscar pelo ID no service
-    )
-    
     # Buscar todos os itens deste produto
-    todos_itens = service_consulta_estoque.consultar_estoque(db, None, 0, 1000)
+    filtros = FiltroConsultaEstoque(
+        produto_nome=None,
+        codigo_barras=None,
+        tipo_produto=None,
+        fornecedor_id=None,
+        armazem_id=None,
+        vencidos=None,
+        dias_vencimento=None,
+        estoque_baixo=None,
+        estoque_critico=None,
+        quantidade_min=None,
+        quantidade_max=None,
+        status=None
+    )
+    todos_itens = service_consulta_estoque.consultar_estoque(db, filtros, 0, 1000)
     itens_produto = [item for item in todos_itens if item.produto_id == produto_id]
     
     return itens_produto
@@ -131,6 +140,19 @@ def consultar_estoque_por_armazem(
     db: Session = Depends(get_db),
 ):
     """Consultar todos os itens de um armazém específico"""
-    
-    filtros = FiltroConsultaEstoque(armazem_id=armazem_id)
+    # Filtrar por armazém específico
+    filtros = FiltroConsultaEstoque(
+        produto_nome=None,
+        codigo_barras=None,
+        tipo_produto=None,
+        fornecedor_id=None,
+        armazem_id=armazem_id,
+        vencidos=None,
+        dias_vencimento=None,
+        estoque_baixo=None,
+        estoque_critico=None,
+        quantidade_min=None,
+        quantidade_max=None,
+        status=None
+    )
     return service_consulta_estoque.consultar_estoque(db, filtros, skip, limit)
