@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import and_, or_, func, case
+from sqlalchemy import and_, or_, func, case, cast, Date
 from typing import List, Optional
 from datetime import datetime, timedelta, date
 import logging
@@ -62,8 +62,8 @@ def consultar_estoque(db: Session, filtros: FiltroConsultaEstoque = None, skip: 
         Armazem.local_armazem.label('armazem_local'),
         ItemArmazenado.quantidade.label('quantidade_atual'),
         Armazem.quantidade_minima,
-        # Calcular dias para vencimento
-        (func.extract('day', ItemEstoque.data_validade - func.current_date())).label('dias_para_vencimento')
+        # Calcular dias para vencimento: converte timestamp para date e subtrai current_date (resulta em integer)
+        (cast(ItemEstoque.data_validade, Date) - func.current_date()).label('dias_para_vencimento')
     ).join(
         ItemArmazenado, ItemEstoque.id == ItemArmazenado.item_estoque_id
     ).join(
