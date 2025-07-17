@@ -66,3 +66,7 @@ class ExportConfig(BaseModel):
     """Configurações para exportação do relatório"""
     formato: str = Field(default="json", description="Formato de exportação (json/csv)")
     incluir_estatisticas: bool = Field(default=True, description="Incluir estatísticas no export")
+
+class ItemMaisVendidoResponse(BaseModel):
+    """Resposta com o item mais vendido/retirado no período"""
+    item: str

@@ -14,7 +14,8 @@ from .schema_relatorio_movimentacao import (
     RelatorioMovimentacao,
     EstatisticasMovimentacao,
     TipoMovimentacao,
-    ExportConfig
+    ExportConfig,
+    ItemMaisVendidoResponse
 )
 from .service_relatorio_movimentacao import ServiceRelatorioMovimentacao
 
@@ -22,6 +23,24 @@ router = APIRouter(
     prefix="/relatorios/movimentacoes",
     tags=["Relatórios - Movimentações"]
 )
+
+@router.get("/mais-vendido", response_model=ItemMaisVendidoResponse)
+def obter_item_mais_vendido(
+    mes: int = Query(..., ge=1, le=12, description="Mês para relatório"),
+    ano: int = Query(..., description="Ano para relatório"),
+    db: Session = Depends(get_db),
+):
+    """
+    Retorna o item mais retirado (mais vendido) no mês/ano especificado.
+    """
+    try:
+        from calendar import monthrange
+        inicio = date(ano, mes, 1)
+        fim = date(ano, mes, monthrange(ano, mes)[1])
+        item = ServiceRelatorioMovimentacao.obter_item_mais_vendido(db, inicio, fim)
+        return ItemMaisVendidoResponse(item=item or "")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao obter item mais vendido: {e}")
 
 @router.get("/", response_model=RelatorioMovimentacao)
 def obter_relatorio_movimentacoes(
@@ -72,8 +91,10 @@ def obter_relatorio_movimentacoes(
 
 @router.get("/estatisticas", response_model=EstatisticasMovimentacao)
 def obter_estatisticas_movimentacoes(
-    data_inicio: Optional[date] = Query(None, description="Data inicial do período"),
-    data_fim: Optional[date] = Query(None, description="Data final do período"),
+    data_inicio: Optional[date] = Query(None, description="Data inicial do período (YYYY-MM-DD)"),
+    data_fim: Optional[date] = Query(None, description="Data final do período (YYYY-MM-DD)"),
+    mes: Optional[int] = Query(None, ge=1, le=12, description="Mês para relatório rápido"),
+    ano: Optional[int] = Query(None, description="Ano para relatório rápido"),
     db: Session = Depends(get_db),
 ):
     """
@@ -87,6 +108,12 @@ def obter_estatisticas_movimentacoes(
     - Valores totais movimentados
     """
     try:
+        # Se mês e ano informados, define início e fim do mês
+        if mes and ano:
+            from calendar import monthrange
+            inicio = date(ano, mes, 1)
+            fim = date(ano, mes, monthrange(ano, mes)[1])
+            data_inicio, data_fim = inicio, fim
         estatisticas = ServiceRelatorioMovimentacao.obter_resumo_periodo(
             db, data_inicio, data_fim
         )
@@ -96,6 +123,31 @@ def obter_estatisticas_movimentacoes(
         raise HTTPException(
             status_code=500,
             detail=f"Erro ao obter estatísticas: {str(e)}"
+        )
+
+@router.get("/estatisticas/mes-atual", response_model=EstatisticasMovimentacao)
+def obter_estatisticas_mes_atual(
+    db: Session = Depends(get_db),
+):
+    """
+    Obtém estatísticas das movimentações apenas do mês atual.
+    
+    **Específico para Dashboard - mostra receita do mês.**
+    """
+    try:
+        from datetime import date
+        hoje = date.today()
+        inicio_mes = date(hoje.year, hoje.month, 1)
+        
+        estatisticas = ServiceRelatorioMovimentacao.obter_resumo_periodo(
+            db, inicio_mes, hoje
+        )
+        return estatisticas
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao obter estatísticas do mês: {str(e)}"
         )
 
 @router.get("/export/csv")
