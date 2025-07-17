@@ -42,7 +42,7 @@ class ServiceRelatorioMovimentacao:
         query = ServiceRelatorioMovimentacao._aplicar_filtros(query, filtros)
         
         # Ordenar por data decrescente
-        query = query.order_by(desc(MovimentacaoEstoque.data))
+        query = query.order_by(desc(MovimentacaoEstoque.data_movimentacao))
         
         # Executar query
         movimentacoes = query.all()
@@ -70,12 +70,12 @@ class ServiceRelatorioMovimentacao:
         
         if filtros.data_inicio:
             query = query.filter(
-                func.date(MovimentacaoEstoque.data) >= filtros.data_inicio
+                func.date(MovimentacaoEstoque.data_movimentacao) >= filtros.data_inicio
             )
         
         if filtros.data_fim:
             query = query.filter(
-                func.date(MovimentacaoEstoque.data) <= filtros.data_fim
+                func.date(MovimentacaoEstoque.data_movimentacao) <= filtros.data_fim
             )
         
         if filtros.tipo:
@@ -140,7 +140,7 @@ class ServiceRelatorioMovimentacao:
         
         return MovimentacaoResumo(
             id=movimentacao.id,
-            data=movimentacao.data,
+            data=movimentacao.data_movimentacao,
             tipo=movimentacao.tipo,
             quantidade=movimentacao.quantidade,
             
@@ -149,7 +149,7 @@ class ServiceRelatorioMovimentacao:
             produto_nome=produto_nome,
             lote=movimentacao.item.lote,
             data_vencimento=movimentacao.item.data_vencimento,
-            preco_custo=float(movimentacao.item.preco_custo),
+            preco_custo=float(movimentacao.item.preco),
             
             # Dados do armazém
             armazem_id=movimentacao.armazem.id,
@@ -184,10 +184,10 @@ class ServiceRelatorioMovimentacao:
         quantidade_total_saida = sum(m.quantidade for m in saidas)
         
         valor_total_entrada = sum(
-            m.quantidade * float(m.item.preco_custo) for m in entradas
+            m.quantidade * float(m.item.preco) for m in entradas
         )
         valor_total_saida = sum(
-            m.quantidade * float(m.item.preco_custo) for m in saidas
+            m.quantidade * float(m.item.preco) for m in saidas
         )
         
         return EstatisticasMovimentacao(
@@ -201,6 +201,53 @@ class ServiceRelatorioMovimentacao:
             periodo_inicio=filtros.data_inicio,
             periodo_fim=filtros.data_fim
         )
+    
+    @staticmethod
+    def obter_resumo_periodo(db: Session, data_inicio: Optional[date], data_fim: Optional[date]) -> EstatisticasMovimentacao:
+        """Obtém apenas as estatísticas de movimentações para um período"""
+        filtros = FiltroRelatorioMovimentacao(
+            data_inicio=data_inicio,
+            data_fim=data_fim
+        )
+        rel = ServiceRelatorioMovimentacao.gerar_relatorio(db, filtros)
+        est = rel.estatisticas
+        est.periodo_inicio = data_inicio
+        est.periodo_fim = data_fim
+        return est
+
+    @staticmethod
+    def obter_item_mais_vendido(db: Session, data_inicio: date, data_fim: date) -> Optional[str]:
+        """Calcula o item mais retirado (mais vendido) no período"""
+        from sqlalchemy import func, desc
+        # somar quantidades de saida por item
+        subq = db.query(
+            MovimentacaoEstoque.item_estoque_id.label('item_estoque_id'),
+            func.sum(MovimentacaoEstoque.quantidade).label('total')
+        ).filter(
+            func.date(MovimentacaoEstoque.data_movimentacao) >= data_inicio,
+            func.date(MovimentacaoEstoque.data_movimentacao) <= data_fim,
+            MovimentacaoEstoque.tipo == 'saida'
+        ).group_by(MovimentacaoEstoque.item_estoque_id).order_by(desc('total')).limit(1).first()
+        if not subq:
+            return None
+        item_id = subq.item_estoque_id
+        # buscar nome do produto
+        from app.ItemEstoque.model_item_estoque import ItemEstoque
+        item = db.query(ItemEstoque).options(
+            joinedload(ItemEstoque.medicamento),
+            joinedload(ItemEstoque.cuidado_pessoal),
+            joinedload(ItemEstoque.suplemento_alimentar)
+        ).filter(ItemEstoque.id == item_id).first()
+        if not item:
+            return None
+        # determina nome
+        if item.medicamento:
+            return item.medicamento.nome
+        if item.cuidado_pessoal:
+            return item.cuidado_pessoal.nome
+        if item.suplemento_alimentar:
+            return item.suplemento_alimentar.nome
+        return None
     
     @staticmethod
     def exportar_csv(relatorio: RelatorioMovimentacao) -> str:
