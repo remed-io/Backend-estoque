@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
+from enum import Enum  # TarjaEnum removed to allow free-text tarja values
 
 class MedicamentoBase(BaseModel):
     nome: str = Field(..., max_length=100)
