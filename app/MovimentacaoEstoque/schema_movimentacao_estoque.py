@@ -13,7 +13,6 @@ class MovimentacaoEstoqueBase(BaseModel):
     receita_digital: Optional[str] = None
     armazem_id: int
 
-
 class MovimentacaoEstoqueCreate(MovimentacaoEstoqueBase):
     pass
 
