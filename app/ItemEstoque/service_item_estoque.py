@@ -102,6 +102,10 @@ def delete_item(db: Session, id: int):
     db_item = db.query(ItemEstoque).filter(ItemEstoque.id == id).first()
     if not db_item:
         raise HTTPException(status_code=404, detail="Item não encontrado")
+    # Remover quaisquer registros de armazenamento ligados a este item
+    from app.ItemArmazenado.model_item_armazenado import ItemArmazenado
+    db.query(ItemArmazenado).filter(ItemArmazenado.item_estoque_id == id).delete(synchronize_session=False)
+    # Agora pode deletar o item de estoque
     db.delete(db_item)
     db.commit()
     return {"message": "Item deletado com sucesso"}

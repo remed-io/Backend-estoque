@@ -13,13 +13,6 @@ class MovimentacaoEstoqueBase(BaseModel):
     receita_digital: Optional[str] = None
     armazem_id: int
 
-    @model_validator(mode='after')
-    def check_saida_fields(cls, values):
-        tipo = values.tipo
-        if tipo and tipo.lower() == 'saida':
-            if not values.cpf_comprador or not values.nome_comprador or not values.receita_digital:
-                raise ValueError('cpf_comprador, nome_comprador e receita_digital são obrigatórios para movimentações do tipo "saida"')
-        return values
 
 class MovimentacaoEstoqueCreate(MovimentacaoEstoqueBase):
     pass

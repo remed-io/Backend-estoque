@@ -156,3 +156,13 @@ def consultar_estoque_por_armazem(
         status=None
     )
     return service_consulta_estoque.consultar_estoque(db, filtros, skip, limit)
+
+@router.get("/por-item-estoque/{item_estoque_id}", response_model=List[ConsultaEstoqueRead])
+def consultar_estoque_por_item_estoque(
+    item_estoque_id: int,
+    db: Session = Depends(get_db),
+):
+    """Consultar estoque de um item específico por seu item_estoque_id"""
+    # Reutiliza a consulta geral e filtra pelo item_estoque_id
+    todos = service_consulta_estoque.consultar_estoque(db, None, 0, 1000)
+    return [item for item in todos if item.item_estoque_id == item_estoque_id]
